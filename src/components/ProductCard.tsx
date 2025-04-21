@@ -2,6 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useAddToCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/use-toast";
+import React from "react";
 
 function formatIndianNumber(num: number) {
   const x = num.toFixed(2);
@@ -27,7 +30,40 @@ interface ProductCardProps {
   rating?: number;
 }
 
-const ProductCard = ({ id, name, price, oldPrice, image, category, isOnSale = false, rating = 5 }: ProductCardProps) => {
+const ProductCard = ({
+  id,
+  name,
+  price,
+  oldPrice,
+  image,
+  category,
+  isOnSale = false,
+  rating = 5
+}: ProductCardProps) => {
+  const { toast } = useToast();
+  const { mutate: addToCart, isPending } = useAddToCart();
+
+  const handleAddToCart = () => {
+    addToCart(
+      { productId: id, quantity: 1 },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Item added!",
+            description: `${name} was added to your cart.`,
+          });
+        },
+        onError: (err: any) => {
+          toast({
+            title: "Could not add to cart",
+            description: err?.message || "Please login before adding to cart.",
+            variant: "destructive",
+          });
+        },
+      }
+    );
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition border p-4 flex flex-col h-full group">
       {/* Product image */}
@@ -71,12 +107,17 @@ const ProductCard = ({ id, name, price, oldPrice, image, category, isOnSale = fa
       </div>
 
       {/* Add to cart button */}
-      <Button className="w-full bg-primary hover:bg-accent flex items-center justify-center gap-2 mt-2">
+      <Button
+        className="w-full bg-primary hover:bg-accent flex items-center justify-center gap-2 mt-2"
+        onClick={handleAddToCart}
+        disabled={isPending}
+      >
         <ShoppingCart className="h-4 w-4" />
-        <span>Add to Cart</span>
+        <span>{isPending ? "Adding..." : "Add to Cart"}</span>
       </Button>
     </div>
   );
 };
 
 export default ProductCard;
+
