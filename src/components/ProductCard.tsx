@@ -1,9 +1,10 @@
-
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAddToCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import React from "react";
 
 function formatIndianNumber(num: number) {
@@ -42,9 +43,22 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const { toast } = useToast();
   const { mutate: addToCart, isPending } = useAddToCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const handleAddToCart = () => {
     console.log("Adding product to cart:", id);
+    
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please login to add items to your cart",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+    
     addToCart(
       { productId: id, quantity: 1 },
       {
@@ -54,19 +68,24 @@ const ProductCard = ({
             description: `${name} was added to your cart.`,
           });
         },
-        onError: (err: any) => {
+        onError: (err: Error) => {
           console.error("Error adding to cart:", err);
           toast({
             title: "Could not add to cart",
-            description: err?.message || "Please login before adding to cart.",
+            description: err?.message || "An error occurred",
             variant: "destructive",
           });
+          
+          if (err.message.includes("login") || err.message.includes("auth")) {
+            setTimeout(() => navigate("/auth"), 1500);
+          }
         },
       }
     );
   };
 
   return (
+    
     <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition border p-4 flex flex-col h-full group">
       {/* Product image */}
       <div className="relative mb-4 rounded-md overflow-hidden">

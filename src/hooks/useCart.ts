@@ -1,9 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 import { addToCart, getUserCart, removeCartItem, updateCartItem } from "@/lib/databaseService";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export function useAddToCart() {
   const queryClient = useQueryClient();
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
 
   return useMutation({
     mutationFn: async ({
@@ -15,16 +19,9 @@ export function useAddToCart() {
     }) => {
       console.log("Starting addToCart mutation with productId:", productId);
       
-      // Check if we have an authenticated user
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-      
-      console.log("Auth check result:", user ? "User found" : "No user", userError ? `Error: ${userError.message}` : "No error");
-      
-      if (userError) throw new Error(`Authentication error: ${userError.message}`);
-      if (!user) throw new Error("Please login before adding items to cart");
+      if (!isAuthenticated || !user) {
+        throw new Error("Please login before adding items to cart");
+      }
 
       // Use the database service to add to cart
       return addToCart(user.id, productId, quantity);
@@ -34,26 +31,33 @@ export function useAddToCart() {
       // Invalidate the cart query to refetch the latest data
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("Error in useAddToCart mutation:", error);
+      
+      // If the error is about authentication, redirect to login
+      if (error.message.includes("login") || error.message.includes("auth")) {
+        navigate("/auth");
+      }
     }
   });
 }
 
 export function useGetCart() {
+  const { isAuthenticated, user } = useAuth();
+
   return useQuery({
     queryKey: ['cart'],
     queryFn: async () => {
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-      if (userError || !user) throw new Error("User not authenticated");
+      if (!isAuthenticated || !user) {
+        throw new Error("User not authenticated");
+      }
 
       return getUserCart(user.id);
     },
     // Don't refetch on window focus, as cart data isn't likely to change from other tabs/windows
     refetchOnWindowFocus: false,
+    // Only run this query if the user is authenticated
+    enabled: isAuthenticated && !!user,
   });
 }
 
