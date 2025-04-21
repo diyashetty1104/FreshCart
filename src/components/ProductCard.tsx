@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +20,7 @@ function formatIndianNumber(num: number) {
 }
 
 interface ProductCardProps {
-  id: string; // Changed from number to string for UUID
+  id: string;
   name: string;
   price: number;
   oldPrice?: number;
@@ -43,6 +44,7 @@ const ProductCard = ({
   const { mutate: addToCart, isPending } = useAddToCart();
 
   const handleAddToCart = () => {
+    console.log("Adding product to cart:", id);
     addToCart(
       { productId: id, quantity: 1 },
       {
@@ -53,6 +55,7 @@ const ProductCard = ({
           });
         },
         onError: (err: any) => {
+          console.error("Error adding to cart:", err);
           toast({
             title: "Could not add to cart",
             description: err?.message || "Please login before adding to cart.",
