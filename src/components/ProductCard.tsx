@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -59,29 +60,39 @@ const ProductCard = ({
       return;
     }
     
-    addToCart(
-      { productId: id, quantity: 1 },
-      {
-        onSuccess: () => {
-          toast({
-            title: "Item added!",
-            description: `${name} was added to your cart.`,
-          });
-        },
-        onError: (err: Error) => {
-          console.error("Error adding to cart:", err);
-          toast({
-            title: "Could not add to cart",
-            description: err?.message || "An error occurred",
-            variant: "destructive",
-          });
-          
-          if (err.message.includes("login") || err.message.includes("auth")) {
-            setTimeout(() => navigate("/auth"), 1500);
-          }
-        },
-      }
-    );
+    // Make sure id is a valid UUID and not just a number
+    if (typeof id === 'string' && id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
+      addToCart(
+        { productId: id, quantity: 1 },
+        {
+          onSuccess: () => {
+            toast({
+              title: "Item added!",
+              description: `${name} was added to your cart.`,
+            });
+          },
+          onError: (err: Error) => {
+            console.error("Error adding to cart:", err);
+            toast({
+              title: "Could not add to cart",
+              description: err?.message || "An error occurred",
+              variant: "destructive",
+            });
+            
+            if (err.message.includes("login") || err.message.includes("auth")) {
+              setTimeout(() => navigate("/auth"), 1500);
+            }
+          },
+        }
+      );
+    } else {
+      console.error("Invalid product ID format:", id);
+      toast({
+        title: "Could not add to cart",
+        description: "Invalid product ID format",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
