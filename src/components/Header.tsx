@@ -56,7 +56,7 @@ const Header = () => {
               <li><a href="#" className="font-medium hover:text-secondary transition">Contact</a></li>
             </ul>
             <div className="py-3">
-              <span className="font-medium">Call us: (123) 456-7890</span>
+              <span className="font-medium">Call us: +91 12345 67890</span>
             </div>
           </div>
           
@@ -69,7 +69,7 @@ const Header = () => {
               <span className="font-medium">Menu</span>
             </button>
             <div>
-              <span className="font-medium">Call us: (123) 456-7890</span>
+              <span className="font-medium">Call us: +91 12345 67890</span>
             </div>
           </div>
         </div>

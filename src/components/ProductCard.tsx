@@ -3,6 +3,19 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+function formatIndianNumber(num: number) {
+  const x = num.toFixed(2);
+  const afterPoint = x.indexOf('.') > 0 ? x.substring(x.indexOf('.')) : '';
+  let n = Math.floor(num).toString();
+  let lastThree = n.substring(n.length - 3);
+  const otherNumbers = n.substring(0, n.length - 3);
+  if (otherNumbers !== '') {
+    lastThree = ',' + lastThree;
+  }
+  const res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+  return res;
+}
+
 interface ProductCardProps {
   id: number;
   name: string;
@@ -50,9 +63,9 @@ const ProductCard = ({ id, name, price, oldPrice, image, category, isOnSale = fa
         
         {/* Price */}
         <div className="flex items-center gap-2 mb-3">
-          <span className="font-bold text-lg">${price.toFixed(2)}</span>
+          <span className="font-bold text-lg">₹{formatIndianNumber(price)}</span>
           {oldPrice && (
-            <span className="text-gray-500 line-through text-sm">${oldPrice.toFixed(2)}</span>
+            <span className="text-gray-500 line-through text-sm">₹{formatIndianNumber(oldPrice)}</span>
           )}
         </div>
       </div>

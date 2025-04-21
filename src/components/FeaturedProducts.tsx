@@ -1,4 +1,3 @@
-
 import ProductCard from "@/components/ProductCard";
 
 const FeaturedProducts = () => {
@@ -7,8 +6,8 @@ const FeaturedProducts = () => {
     {
       id: 1,
       name: "Organic Bananas",
-      price: 4.99,
-      oldPrice: 6.99,
+      price: 499, // Changed from 4.99 to 499 for realistic Indian prices
+      oldPrice: 699,
       image: "https://images.unsplash.com/photo-1603833665858-e61d17a86224?q=80&auto=format&fit=crop",
       category: "Fruits",
       isOnSale: true,
@@ -17,7 +16,7 @@ const FeaturedProducts = () => {
     {
       id: 2,
       name: "Fresh Red Tomatoes",
-      price: 3.49,
+      price: 349,
       image: "https://images.unsplash.com/photo-1582284540020-8acbe03f4924?q=80&auto=format&fit=crop",
       category: "Vegetables",
       rating: 4
@@ -25,8 +24,8 @@ const FeaturedProducts = () => {
     {
       id: 3,
       name: "Farm Fresh Eggs (Dozen)",
-      price: 5.99,
-      oldPrice: 7.49,
+      price: 599,
+      oldPrice: 749,
       image: "https://images.unsplash.com/photo-1506976785307-8732e854ad03?q=80&auto=format&fit=crop",
       category: "Dairy & Eggs",
       isOnSale: true,
@@ -35,7 +34,7 @@ const FeaturedProducts = () => {
     {
       id: 4,
       name: "Whole Grain Bread",
-      price: 3.99,
+      price: 399,
       image: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&auto=format&fit=crop",
       category: "Bakery",
       rating: 4
@@ -43,8 +42,8 @@ const FeaturedProducts = () => {
     {
       id: 5,
       name: "Fresh Atlantic Salmon",
-      price: 12.99,
-      oldPrice: 15.99,
+      price: 1299,
+      oldPrice: 1599,
       image: "https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?q=80&auto=format&fit=crop",
       category: "Fish",
       isOnSale: true,
@@ -53,7 +52,7 @@ const FeaturedProducts = () => {
     {
       id: 6,
       name: "Organic Avocado (Pack of 4)",
-      price: 6.99,
+      price: 699,
       image: "https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?q=80&auto=format&fit=crop",
       category: "Fruits",
       rating: 4
@@ -61,8 +60,8 @@ const FeaturedProducts = () => {
     {
       id: 7,
       name: "Organic Bell Peppers Mix",
-      price: 5.49,
-      oldPrice: 7.29,
+      price: 549,
+      oldPrice: 729,
       image: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?q=80&auto=format&fit=crop",
       category: "Vegetables",
       isOnSale: true,
@@ -71,7 +70,7 @@ const FeaturedProducts = () => {
     {
       id: 8,
       name: "Premium Ground Coffee",
-      price: 8.99,
+      price: 899,
       image: "https://images.unsplash.com/photo-1559056199-641700fd58ff?q=80&auto=format&fit=crop",
       category: "Beverages",
       rating: 5
