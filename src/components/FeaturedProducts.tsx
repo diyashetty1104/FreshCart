@@ -1,12 +1,13 @@
+
 import ProductCard from "@/components/ProductCard";
 
 const FeaturedProducts = () => {
-  // Sample product data
+  // Sample product data with string IDs
   const products = [
     {
-      id: 1,
+      id: "1", // Changed to string
       name: "Organic Bananas",
-      price: 499, // Changed from 4.99 to 499 for realistic Indian prices
+      price: 499,
       oldPrice: 699,
       image: "https://images.unsplash.com/photo-1603833665858-e61d17a86224?q=80&auto=format&fit=crop",
       category: "Fruits",
@@ -14,7 +15,7 @@ const FeaturedProducts = () => {
       rating: 5
     },
     {
-      id: 2,
+      id: "2",
       name: "Fresh Red Tomatoes",
       price: 349,
       image: "https://images.unsplash.com/photo-1582284540020-8acbe03f4924?q=80&auto=format&fit=crop",
@@ -22,7 +23,7 @@ const FeaturedProducts = () => {
       rating: 4
     },
     {
-      id: 3,
+      id: "3",
       name: "Farm Fresh Eggs (Dozen)",
       price: 599,
       oldPrice: 749,
@@ -32,7 +33,7 @@ const FeaturedProducts = () => {
       rating: 5
     },
     {
-      id: 4,
+      id: "4",
       name: "Whole Grain Bread",
       price: 399,
       image: "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&auto=format&fit=crop",
@@ -40,7 +41,7 @@ const FeaturedProducts = () => {
       rating: 4
     },
     {
-      id: 5,
+      id: "5",
       name: "Fresh Atlantic Salmon",
       price: 1299,
       oldPrice: 1599,
@@ -50,7 +51,7 @@ const FeaturedProducts = () => {
       rating: 5
     },
     {
-      id: 6,
+      id: "6",
       name: "Organic Avocado (Pack of 4)",
       price: 699,
       image: "https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?q=80&auto=format&fit=crop",
@@ -58,7 +59,7 @@ const FeaturedProducts = () => {
       rating: 4
     },
     {
-      id: 7,
+      id: "7",
       name: "Organic Bell Peppers Mix",
       price: 549,
       oldPrice: 729,
@@ -68,7 +69,7 @@ const FeaturedProducts = () => {
       rating: 4
     },
     {
-      id: 8,
+      id: "8",
       name: "Premium Ground Coffee",
       price: 899,
       image: "https://images.unsplash.com/photo-1559056199-641700fd58ff?q=80&auto=format&fit=crop",

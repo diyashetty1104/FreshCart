@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +19,7 @@ function formatIndianNumber(num: number) {
 }
 
 interface ProductCardProps {
-  id: number;
+  id: string; // Changed from number to string for UUID
   name: string;
   price: number;
   oldPrice?: number;
@@ -120,4 +119,3 @@ const ProductCard = ({
 };
 
 export default ProductCard;
-
