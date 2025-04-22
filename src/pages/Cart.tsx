@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";  // Import Link
+import { Link } from "react-router-dom";
 import { useGetCart, useUpdateCartItem, useRemoveCartItem } from "@/hooks/useCart";
 import { toast } from "sonner";
 
@@ -93,7 +93,7 @@ export default function Cart() {
           <h2 className="text-xl font-medium mb-2">Your cart is empty</h2>
           <p className="text-muted-foreground mb-6">Browse our products and add items to your cart</p>
           <Button asChild>
-            <Link to="/">Continue Shopping</Link>
+            <Link to="/shop">Continue Shopping</Link>
           </Button>
         </div>
       </div>
@@ -192,7 +192,7 @@ export default function Cart() {
                 variant="outline" 
                 className="w-full mt-2"
               >
-                <Link to="/">Continue Shopping</Link>
+                <Link to="/shop">Continue Shopping</Link>
               </Button>
             </div>
           </div>
