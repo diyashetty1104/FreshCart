@@ -1,112 +1,27 @@
 
-import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
-import { supabase } from "@/integrations/supabase/client";
+import { fruits } from "@/data/fruits";
 
-interface Product {
-  product_id: string;
-  name: string;
-  price: number;
-  old_price?: number;
-  image: string | null;
-  category_id: string;
-  category: string;
-  is_on_sale: boolean;
-  rating?: number;
-  description?: string;
-}
-
-const FeaturedProducts = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const { data, error } = await supabase.from("categories").select("*");
-      if (error) {
-        console.error("Error fetching categories:", error);
-        return;
-      }
-      
-      const categoryMap: Record<string, string> = {};
-      data.forEach(category => {
-        categoryMap[category.category_id] = category.name;
-      });
-      setCategories(categoryMap);
-    };
-
-    const fetchProducts = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(8);
-
-      if (error) {
-        console.error("Error loading featured products:", error);
-      } else {
-        console.log("Featured products loaded:", data.length);
-        // Transform the data to include the category property
-        const productsWithCategory = data.map(product => ({
-          ...product,
-          category: "Loading..." // Temporary placeholder
-        }));
-        setProducts(productsWithCategory);
-      }
-      setLoading(false);
-    };
-
-    fetchCategories();
-    fetchProducts();
-  }, []);
-
-  // Update products with category names once categories are loaded
-  useEffect(() => {
-    if (Object.keys(categories).length > 0 && products.length > 0) {
-      const updatedProducts = products.map(product => ({
-        ...product,
-        category: categories[product.category_id] || "Uncategorized"
-      }));
-      setProducts(updatedProducts);
-    }
-  }, [categories, products]);
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Featured Products</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-96 bg-gray-100 rounded-lg animate-pulse"></div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <section className="container mx-auto px-4 py-16">
-      <h2 className="text-3xl font-bold text-center mb-12">Featured Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product) => (
-          <ProductCard
-            key={product.product_id}
-            id={product.product_id}
-            name={product.name}
-            price={Number(product.price)}
-            oldPrice={product.old_price ? Number(product.old_price) : undefined}
-            image={product.image ?? "/placeholder.svg"}
-            category={product.category}
-            isOnSale={Boolean(product.is_on_sale)}
-            rating={product.rating}
-            description={product.description}
-          />
-        ))}
-      </div>
-    </section>
-  );
-};
+const FeaturedProducts = () => (
+  <section className="container mx-auto px-4 py-16">
+    <h2 className="text-3xl font-bold text-center mb-12">Featured Fruits</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {fruits.slice(0, 4).map((fruit) => (
+        <ProductCard
+          key={fruit.id}
+          id={fruit.id}
+          name={fruit.name}
+          price={fruit.price}
+          oldPrice={fruit.oldPrice}
+          image={fruit.image}
+          category={fruit.category}
+          isOnSale={fruit.isOnSale}
+          rating={fruit.rating}
+          description={fruit.description}
+        />
+      ))}
+    </div>
+  </section>
+);
 
 export default FeaturedProducts;
