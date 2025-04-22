@@ -3,9 +3,19 @@ import { Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Navigation helper for shop page
+  const navToShop = () => {
+    if (location.pathname !== "/shop") {
+      navigate("/shop");
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -13,9 +23,9 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Logo */}
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold text-primary">
+          <Link to="/" className="text-2xl font-bold text-primary no-underline hover:opacity-80">
             <span className="text-secondary">Fresh</span>Cart
-          </h1>
+          </Link>
         </div>
 
         {/* Search bar */}
@@ -35,7 +45,7 @@ const Header = () => {
           <Button variant="ghost" size="icon" className="relative">
             <User className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="relative">
+          <Button variant="ghost" size="icon" className="relative" aria-label="Cart">
             <ShoppingCart className="h-5 w-5" />
             <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
               0
@@ -49,11 +59,28 @@ const Header = () => {
         <div className="container mx-auto px-4">
           <div className="hidden md:flex items-center justify-between">
             <ul className="flex space-x-6 py-3">
-              <li><a href="#" className="font-medium hover:text-secondary transition">Home</a></li>
-              <li><a href="#" className="font-medium hover:text-secondary transition">Shop</a></li>
-              <li><a href="#" className="font-medium hover:text-secondary transition">Categories</a></li>
-              <li><a href="#" className="font-medium hover:text-secondary transition">Deals</a></li>
-              <li><a href="#" className="font-medium hover:text-secondary transition">Contact</a></li>
+              <li>
+                <Link to="/" className="font-medium hover:text-secondary transition">Home</Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={navToShop}
+                  className="font-medium hover:text-secondary transition bg-transparent border-0 outline-none"
+                  style={{ background: "none", padding: 0, cursor: "pointer" }}
+                >
+                  Shop
+                </button>
+              </li>
+              <li>
+                <a href="#" className="font-medium hover:text-secondary transition">Categories</a>
+              </li>
+              <li>
+                <a href="#" className="font-medium hover:text-secondary transition">Deals</a>
+              </li>
+              <li>
+                <a href="#" className="font-medium hover:text-secondary transition">Contact</a>
+              </li>
             </ul>
             <div className="py-3">
               <span className="font-medium">Call us: +91 12345 67890</span>
@@ -79,8 +106,8 @@ const Header = () => {
           <div className="md:hidden bg-primary border-t border-primary-foreground/10">
             <div className="container mx-auto px-4">
               <ul className="py-3 space-y-2">
-                <li><a href="#" className="block font-medium hover:text-secondary transition">Home</a></li>
-                <li><a href="#" className="block font-medium hover:text-secondary transition">Shop</a></li>
+                <li><Link to="/" className="block font-medium hover:text-secondary transition">Home</Link></li>
+                <li><button onClick={navToShop} className="bg-transparent border-0 font-medium hover:text-secondary w-full text-left transition">Shop</button></li>
                 <li><a href="#" className="block font-medium hover:text-secondary transition">Categories</a></li>
                 <li><a href="#" className="block font-medium hover:text-secondary transition">Deals</a></li>
                 <li><a href="#" className="block font-medium hover:text-secondary transition">Contact</a></li>

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +12,7 @@ interface Product {
   category: string;
   is_on_sale: boolean;
   rating?: number;
+  description?: string;
 }
 
 const FeaturedProducts = () => {
@@ -99,6 +99,7 @@ const FeaturedProducts = () => {
             category={product.category}
             isOnSale={Boolean(product.is_on_sale)}
             rating={product.rating}
+            description={product.description}
           />
         ))}
       </div>
