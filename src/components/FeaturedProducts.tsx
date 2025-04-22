@@ -47,6 +47,7 @@ const FeaturedProducts = () => {
       if (error) {
         console.error("Error loading featured products:", error);
       } else {
+        console.log("Featured products loaded:", data.length);
         // Transform the data to include the category property
         const productsWithCategory = data.map(product => ({
           ...product,
@@ -109,4 +110,3 @@ const FeaturedProducts = () => {
 };
 
 export default FeaturedProducts;
-

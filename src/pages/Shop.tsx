@@ -31,20 +31,38 @@ export default function Shop() {
   useEffect(() => {
     async function fetchCategories() {
       const { data, error } = await supabase.from("categories").select("*").order("name");
-      if (!error && data) setCategories(data);
+      if (!error && data) {
+        console.log("Categories fetched:", data);
+        setCategories(data);
+      } else {
+        console.error("Error fetching categories:", error);
+      }
     }
     fetchCategories();
   }, []);
 
   useEffect(() => {
-    setLoading(true);
     async function fetchProducts() {
+      setLoading(true);
       let query = supabase.from("products").select("*").order("created_at", { ascending: false });
-      if (activeCategory) query = query.eq("category_id", activeCategory);
+      
+      if (activeCategory) {
+        query = query.eq("category_id", activeCategory);
+      }
+      
       const { data, error } = await query;
-      setProducts(data || []);
+      
+      if (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } else {
+        console.log("Products fetched:", data?.length || 0, "products");
+        setProducts(data || []);
+      }
+      
       setLoading(false);
     }
+    
     fetchProducts();
   }, [activeCategory]);
 
@@ -75,34 +93,37 @@ export default function Shop() {
 
       {/* Products grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        {loading
-          ? Array(8)
-              .fill(0)
-              .map((_, i) => (
-                <div className="h-96 bg-gray-100 rounded-xl animate-pulse" key={i} />
-              ))
-          : products.length === 0
-          ? (
-              <div className="col-span-full text-center text-muted-foreground py-16 text-xl">
-                No products found.
-              </div>
-            )
-          : products.map(product => (
-              <ProductCard
-                key={product.product_id}
-                id={product.product_id}
-                name={product.name}
-                price={Number(product.price)}
-                oldPrice={product.old_price ? Number(product.old_price) : undefined}
-                image={product.image ?? "/placeholder.svg"}
-                category={
-                  categories.find(cat => cat.category_id === product.category_id)?.name || ""
-                }
-                isOnSale={Boolean(product.is_on_sale)}
-                rating={product.rating}
-                description={product.description}
-              />
-            ))}
+        {loading ? (
+          // Loading placeholders
+          Array(8)
+            .fill(0)
+            .map((_, i) => (
+              <div className="h-96 bg-gray-100 rounded-xl animate-pulse" key={i} />
+            ))
+        ) : products.length === 0 ? (
+          // No products found message
+          <div className="col-span-full text-center text-muted-foreground py-16 text-xl">
+            No products found in this category.
+          </div>
+        ) : (
+          // Products list
+          products.map(product => (
+            <ProductCard
+              key={product.product_id}
+              id={product.product_id}
+              name={product.name}
+              price={Number(product.price)}
+              oldPrice={product.old_price ? Number(product.old_price) : undefined}
+              image={product.image ?? "/placeholder.svg"}
+              category={
+                categories.find(cat => cat.category_id === product.category_id)?.name || "Uncategorized"
+              }
+              isOnSale={Boolean(product.is_on_sale)}
+              rating={product.rating}
+              description={product.description}
+            />
+          ))
+        )}
       </div>
     </div>
   );
