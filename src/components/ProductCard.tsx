@@ -6,7 +6,7 @@ import { useAddToCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 
 function formatIndianNumber(num: number) {
   const x = num.toFixed(2);
@@ -46,6 +46,7 @@ const ProductCard = ({
   const { mutate: addToCart, isPending } = useAddToCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = () => {
     console.log("Adding product to cart:", id);
@@ -60,18 +61,23 @@ const ProductCard = ({
       return;
     }
     
-    // Make sure id is a valid UUID and not just a number
-    if (typeof id === 'string' && id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
+    // Validate UUID format before attempting to add to cart
+    const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+    
+    if (id && uuidRegex.test(id)) {
+      setIsAdding(true);
       addToCart(
         { productId: id, quantity: 1 },
         {
           onSuccess: () => {
+            setIsAdding(false);
             toast({
               title: "Item added!",
               description: `${name} was added to your cart.`,
             });
           },
           onError: (err: Error) => {
+            setIsAdding(false);
             console.error("Error adding to cart:", err);
             toast({
               title: "Could not add to cart",
@@ -140,12 +146,13 @@ const ProductCard = ({
 
       {/* Add to cart button */}
       <Button
-        className="w-full bg-primary hover:bg-accent flex items-center justify-center gap-2 mt-2"
+        className="w-full bg-primary hover:bg-accent flex items-center justify-center gap-2 mt-2 transition-all"
         onClick={handleAddToCart}
-        disabled={isPending}
+        disabled={isPending || isAdding}
+        aria-label={`Add ${name} to cart`}
       >
-        <ShoppingCart className="h-4 w-4" />
-        <span>{isPending ? "Adding..." : "Add to Cart"}</span>
+        <ShoppingCart className={`h-4 w-4 ${isAdding ? 'animate-bounce' : ''}`} />
+        <span>{isAdding ? "Adding..." : isPending ? "Processing..." : "Add to Cart"}</span>
       </Button>
     </div>
   );

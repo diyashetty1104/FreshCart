@@ -46,7 +46,12 @@ const FeaturedProducts = () => {
       if (error) {
         console.error("Error loading featured products:", error);
       } else {
-        setProducts(data || []);
+        // Transform the data to include the category property
+        const productsWithCategory = data.map(product => ({
+          ...product,
+          category: "Loading..." // Temporary placeholder
+        }));
+        setProducts(productsWithCategory);
       }
       setLoading(false);
     };
@@ -54,6 +59,17 @@ const FeaturedProducts = () => {
     fetchCategories();
     fetchProducts();
   }, []);
+
+  // Update products with category names once categories are loaded
+  useEffect(() => {
+    if (Object.keys(categories).length > 0 && products.length > 0) {
+      const updatedProducts = products.map(product => ({
+        ...product,
+        category: categories[product.category_id] || "Uncategorized"
+      }));
+      setProducts(updatedProducts);
+    }
+  }, [categories, products]);
 
   if (loading) {
     return (
@@ -80,7 +96,7 @@ const FeaturedProducts = () => {
             price={Number(product.price)}
             oldPrice={product.old_price ? Number(product.old_price) : undefined}
             image={product.image || "/placeholder.svg"}
-            category={categories[product.category_id] || "Uncategorized"}
+            category={product.category}
             isOnSale={Boolean(product.is_on_sale)}
             rating={product.rating}
           />

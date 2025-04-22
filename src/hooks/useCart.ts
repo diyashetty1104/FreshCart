@@ -1,3 +1,4 @@
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
 import { addToCart, getUserCart, removeCartItem, updateCartItem } from "@/lib/databaseService";
@@ -36,7 +37,7 @@ export function useAddToCart() {
       
       // If the error is about authentication, redirect to login
       if (error.message.includes("login") || error.message.includes("auth")) {
-        navigate("/auth");
+        setTimeout(() => navigate("/auth"), 1500);
       }
     }
   });
