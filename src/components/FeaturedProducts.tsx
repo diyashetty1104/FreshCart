@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +8,7 @@ interface Product {
   name: string;
   price: number;
   old_price?: number;
-  image: string;
+  image: string | null;
   category_id: string;
   category: string;
   is_on_sale: boolean;
@@ -95,7 +96,7 @@ const FeaturedProducts = () => {
             name={product.name}
             price={Number(product.price)}
             oldPrice={product.old_price ? Number(product.old_price) : undefined}
-            image={product.image || "/placeholder.svg"}
+            image={product.image ?? "/placeholder.svg"}
             category={product.category}
             isOnSale={Boolean(product.is_on_sale)}
             rating={product.rating}
@@ -108,3 +109,4 @@ const FeaturedProducts = () => {
 };
 
 export default FeaturedProducts;
+

@@ -94,7 +94,7 @@ export default function Shop() {
                 name={product.name}
                 price={Number(product.price)}
                 oldPrice={product.old_price ? Number(product.old_price) : undefined}
-                image={product.image || "/placeholder.svg"}
+                image={product.image ?? "/placeholder.svg"}
                 category={
                   categories.find(cat => cat.category_id === product.category_id)?.name || ""
                 }
