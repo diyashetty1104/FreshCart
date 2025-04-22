@@ -1,8 +1,8 @@
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router-dom";  // Import Link
 import { useGetCart, useUpdateCartItem, useRemoveCartItem } from "@/hooks/useCart";
 import { toast } from "sonner";
 
@@ -92,7 +92,9 @@ export default function Cart() {
         <div className="p-10 text-center border rounded-lg">
           <h2 className="text-xl font-medium mb-2">Your cart is empty</h2>
           <p className="text-muted-foreground mb-6">Browse our products and add items to your cart</p>
-          <Button href="/shop">Continue Shopping</Button>
+          <Button asChild>
+            <Link to="/shop">Continue Shopping</Link>
+          </Button>
         </div>
       </div>
     );
@@ -185,8 +187,12 @@ export default function Cart() {
               </div>
               
               <Button className="w-full">Proceed to Checkout</Button>
-              <Button variant="outline" className="w-full mt-2" href="/shop">
-                Continue Shopping
+              <Button 
+                asChild 
+                variant="outline" 
+                className="w-full mt-2"
+              >
+                <Link to="/shop">Continue Shopping</Link>
               </Button>
             </div>
           </div>
