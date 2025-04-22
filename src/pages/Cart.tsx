@@ -93,7 +93,7 @@ export default function Cart() {
           <h2 className="text-xl font-medium mb-2">Your cart is empty</h2>
           <p className="text-muted-foreground mb-6">Browse our products and add items to your cart</p>
           <Button asChild>
-            <Link to="/shop">Continue Shopping</Link>
+            <Link to="/">Continue Shopping</Link>
           </Button>
         </div>
       </div>
@@ -192,7 +192,7 @@ export default function Cart() {
                 variant="outline" 
                 className="w-full mt-2"
               >
-                <Link to="/shop">Continue Shopping</Link>
+                <Link to="/">Continue Shopping</Link>
               </Button>
             </div>
           </div>
