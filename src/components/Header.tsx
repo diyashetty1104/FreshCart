@@ -4,11 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useGetCart } from "@/hooks/useCart";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { data: cartData } = useGetCart();
+
+  // Count total items in cart
+  const cartItemCount = cartData?.items?.reduce((total, item) => total + item.quantity, 0) || 0;
 
   // Navigation helper for shop page
   const navToShop = () => {
@@ -45,10 +50,16 @@ const Header = () => {
           <Button variant="ghost" size="icon" className="relative">
             <User className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="relative" aria-label="Cart">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="relative" 
+            aria-label="Cart"
+            onClick={() => navigate('/cart')}
+          >
             <ShoppingCart className="h-5 w-5" />
             <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              0
+              {cartItemCount}
             </span>
           </Button>
         </div>
@@ -79,7 +90,7 @@ const Header = () => {
                 <a href="#" className="font-medium hover:text-secondary transition">Deals</a>
               </li>
               <li>
-                <a href="#" className="font-medium hover:text-secondary transition">Contact</a>
+                <Link to="/cart" className="font-medium hover:text-secondary transition">Cart</Link>
               </li>
             </ul>
             <div className="py-3">
@@ -110,7 +121,7 @@ const Header = () => {
                 <li><button onClick={navToShop} className="bg-transparent border-0 font-medium hover:text-secondary w-full text-left transition">Shop</button></li>
                 <li><a href="#" className="block font-medium hover:text-secondary transition">Categories</a></li>
                 <li><a href="#" className="block font-medium hover:text-secondary transition">Deals</a></li>
-                <li><a href="#" className="block font-medium hover:text-secondary transition">Contact</a></li>
+                <li><Link to="/cart" className="block font-medium hover:text-secondary transition">Cart</Link></li>
               </ul>
             </div>
           </div>
