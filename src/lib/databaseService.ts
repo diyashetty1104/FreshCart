@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 // --- USER related functions ---
@@ -138,73 +137,88 @@ export const getUserCart = async (userId: string) => {
 };
 
 export const addToCart = async (userId: string, productId: string, quantity: number = 1) => {
-  // Get user's cart or create one
-  let { data: cart, error: cartError } = await supabase
-    .from("cart")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  if (cartError) throw cartError;
-
-  if (!cart) {
-    // Cart doesn't exist, create one
-    const { data: newCart, error: createError } = await supabase
+  try {
+    console.log(`Adding product ${productId} to cart for user ${userId}`);
+    
+    // Get user's cart or create one
+    let { data: cart, error: cartError } = await supabase
       .from("cart")
-      .insert({ user_id: userId })
-      .select()
+      .select("*")
+      .eq("user_id", userId)
       .maybeSingle();
 
-    if (createError) throw createError;
-    cart = newCart;
-  }
+    if (cartError) throw cartError;
 
-  // First check if there's an existing product in the database with this ID
-  const { data: existingProduct, error: productError } = await supabase
-    .from("products")
-    .select("product_id")
-    .eq("product_id", productId)
-    .maybeSingle();
+    if (!cart) {
+      // Cart doesn't exist, create one
+      const { data: newCart, error: createError } = await supabase
+        .from("cart")
+        .insert({ user_id: userId })
+        .select()
+        .maybeSingle();
 
-  // If the product doesn't exist in the database, we need to add it
-  // In a real application, you would want to properly sync this data
-  // For now, we'll just allow the non-UUID format product ID
-  
-  // Check if item already in cart
-  const { data: existingItem, error: checkError } = await supabase
-    .from("cart_items")
-    .select("*")
-    .eq("cart_id", cart.cart_id)
-    .eq("product_id", productId)
-    .maybeSingle();
+      if (createError) throw createError;
+      cart = newCart;
+    }
 
-  if (checkError) throw checkError;
-
-  if (existingItem) {
-    // Update quantity
-    const { data, error } = await supabase
+    // For non-UUID product IDs, we need a workaround since the database expects UUIDs
+    // First, check if this is a mock product from our frontend that doesn't exist in the DB yet
+    
+    // We need to check if this product ID exists in our mock data
+    // For now, this is a temporary solution - in a real app, all products should be in the DB
+    
+    // Check if item already in cart (using string comparison since IDs might not be UUIDs)
+    const { data: cartItems, error: itemsError } = await supabase
       .from("cart_items")
-      .update({ quantity: existingItem.quantity + quantity })
-      .eq("cart_item_id", existingItem.cart_item_id)
-      .select()
-      .maybeSingle();
+      .select("*")
+      .eq("cart_id", cart.cart_id);
+      
+    if (itemsError) throw itemsError;
+    
+    // Find the item manually since we can't rely on direct DB equality with non-UUID values
+    const existingItem = cartItems?.find(item => item.product_id === productId);
 
-    if (error) throw error;
-    return data;
-  } else {
-    // Add new item
-    const { data, error } = await supabase
-      .from("cart_items")
-      .insert({
-        cart_id: cart.cart_id,
-        product_id: productId,
-        quantity,
-      })
-      .select()
-      .maybeSingle();
+    if (existingItem) {
+      // Update quantity
+      const { data, error } = await supabase
+        .from("cart_items")
+        .update({ quantity: existingItem.quantity + quantity })
+        .eq("cart_item_id", existingItem.cart_item_id)
+        .select()
+        .maybeSingle();
 
-    if (error) throw error;
-    return data;
+      if (error) throw error;
+      return data;
+    } else {
+      // Add new item - for now we'll try to insert despite the UUID constraint
+      try {
+        // This is a temporary solution for the demo
+        // In a real application, we'd first add the product to the products table
+        // or ensure all frontend products exist in the backend
+        const { data, error } = await supabase
+          .from("cart_items")
+          .insert({
+            cart_id: cart.cart_id,
+            product_id: productId,
+            quantity,
+          })
+          .select()
+          .maybeSingle();
+
+        if (error) {
+          console.error("Error adding item to cart:", error);
+          throw error;
+        }
+        
+        return data;
+      } catch (insertError) {
+        console.error("Failed to add item to cart:", insertError);
+        throw new Error("Could not add item to cart - product ID format is incompatible with the database");
+      }
+    }
+  } catch (error) {
+    console.error("Error in addToCart:", error);
+    throw error;
   }
 };
 
@@ -231,4 +245,3 @@ export const removeCartItem = async (cartItemId: string) => {
 };
 
 // More functions for orders, reviews, etc. can be added as needed
-
