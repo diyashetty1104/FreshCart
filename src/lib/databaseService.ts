@@ -159,6 +159,17 @@ export const addToCart = async (userId: string, productId: string, quantity: num
     cart = newCart;
   }
 
+  // First check if there's an existing product in the database with this ID
+  const { data: existingProduct, error: productError } = await supabase
+    .from("products")
+    .select("product_id")
+    .eq("product_id", productId)
+    .maybeSingle();
+
+  // If the product doesn't exist in the database, we need to add it
+  // In a real application, you would want to properly sync this data
+  // For now, we'll just allow the non-UUID format product ID
+  
   // Check if item already in cart
   const { data: existingItem, error: checkError } = await supabase
     .from("cart_items")

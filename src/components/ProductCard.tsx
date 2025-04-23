@@ -61,8 +61,9 @@ const ProductCard = ({
       navigate("/auth");
       return;
     }
-    const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-    if (id && uuidRegex.test(id)) {
+    
+    // Remove the UUID regex validation since our product IDs don't follow UUID format
+    if (id) {
       setIsAdding(true);
       addToCart(
         { productId: id, quantity: 1 },
@@ -95,7 +96,7 @@ const ProductCard = ({
     } else {
       toast({
         title: "Could not add to cart",
-        description: "Invalid product ID format",
+        description: "Invalid product ID",
         variant: "destructive",
       });
     }
