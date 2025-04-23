@@ -1,7 +1,14 @@
 
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const handleShopNow = () => {
+    navigate("/shop");
+  };
+
   return (
     <section className="relative bg-gray-100 py-12 md:py-20">
       <div className="container mx-auto px-4">
@@ -12,7 +19,10 @@ const Hero = () => {
             <p className="text-gray-600 mb-6 text-lg">
               Get fresh groceries delivered to your doorstep within 30 minutes with free delivery on your first order.
             </p>
-            <Button className="bg-primary hover:bg-accent text-white px-8 py-3 rounded-full text-lg font-medium">
+            <Button 
+              onClick={handleShopNow} 
+              className="bg-primary hover:bg-accent text-white px-8 py-3 rounded-full text-lg font-medium"
+            >
               Shop Now
             </Button>
           </div>
