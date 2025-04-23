@@ -65,7 +65,7 @@ export default function Shop() {
   return (
     <div className="container mx-auto px-2 md:px-4 py-8 min-h-[80vh]">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
-        <h2 className="text-2xl md:text-3xl font-bold">Shop Fruits</h2>
+        <h2 className="text-2xl md:text-3xl font-bold">Shop</h2>
         <Button 
           variant="outline" 
           onClick={handleBackToHome}
@@ -123,3 +123,4 @@ export default function Shop() {
     </div>
   );
 }
+
