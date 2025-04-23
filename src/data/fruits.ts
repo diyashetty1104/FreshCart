@@ -1,4 +1,3 @@
-
 export interface Fruit {
   id: string;
   name: string;
@@ -11,7 +10,7 @@ export interface Fruit {
   description?: string;
 }
 
-// Placeholder fruit images (unsplash or the default placeholder)
+// Existing Fruits products
 export const fruits: Fruit[] = [
   {
     id: "fruit-apple",
@@ -53,5 +52,89 @@ export const fruits: Fruit[] = [
     isOnSale: true,
     rating: 5,
     description: "Tangy, fresh kiwis.",
+  },
+  // NEW: Vegetables category
+  {
+    id: "veg-tomato",
+    name: "Tomato",
+    price: 25,
+    image: "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?w=400",
+    category: "Vegetables",
+    isOnSale: false,
+    rating: 4,
+    description: "Red, ripe tomatoes perfect for salads."
+  },
+  {
+    id: "veg-cucumber",
+    name: "Cucumber",
+    price: 18,
+    image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400",
+    category: "Vegetables",
+    isOnSale: false,
+    rating: 4,
+    description: "Cool, fresh cucumbers."
+  },
+  // NEW: Bakery category
+  {
+    id: "bakery-wholewheat-bread",
+    name: "Whole Wheat Bread",
+    price: 50,
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400",
+    category: "Bakery",
+    isOnSale: false,
+    rating: 5,
+    description: "Healthy whole wheat bread, baked fresh daily."
+  },
+  {
+    id: "bakery-croissant",
+    name: "Croissant",
+    price: 30,
+    image: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?w=400",
+    category: "Bakery",
+    isOnSale: false,
+    rating: 5,
+    description: "Flaky, buttery French croissants."
+  },
+  // NEW: Dairy category
+  {
+    id: "dairy-milk",
+    name: "Milk",
+    price: 60,
+    image: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?w=400&fit=crop",
+    category: "Dairy",
+    isOnSale: false,
+    rating: 5,
+    description: "Pure and fresh pasteurized milk."
+  },
+  {
+    id: "dairy-cheese",
+    name: "Cheddar Cheese",
+    price: 140,
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400",
+    category: "Dairy",
+    isOnSale: false,
+    rating: 5,
+    description: "Rich, creamy cheddar cheese."
+  },
+  // NEW: Drinks category
+  {
+    id: "drinks-orange-juice",
+    name: "Orange Juice",
+    price: 80,
+    image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&fit=crop",
+    category: "Drinks",
+    isOnSale: false,
+    rating: 4,
+    description: "Freshly squeezed orange juice."
+  },
+  {
+    id: "drinks-cola",
+    name: "Cola Can",
+    price: 40,
+    image: "https://images.unsplash.com/photo-1506354666786-959d6d497f1a?w=400",
+    category: "Drinks",
+    isOnSale: false,
+    rating: 4,
+    description: "Chilled fizzy cola."
   },
 ];
