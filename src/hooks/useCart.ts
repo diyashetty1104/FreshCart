@@ -1,7 +1,6 @@
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabaseClient";
-import { addToCart, getUserCart, removeCartItem, updateCartItem } from "@/lib/databaseService";
+import { addToCart, getUserCart, removeCartItem, updateCartItem } from "@/lib/db";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
