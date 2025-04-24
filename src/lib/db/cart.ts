@@ -59,6 +59,46 @@ export const addToCart = async (userId: string, productId: string, quantity: num
       cart = newCart;
     }
 
+    // First, find the product by ID or name (to handle both UUID and string IDs)
+    let productQuery;
+    
+    // Check if productId is a UUID format or a string format
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    
+    if (uuidPattern.test(productId)) {
+      // It's a UUID format
+      console.log("Using UUID query for product:", productId);
+      productQuery = supabase
+        .from("products")
+        .select("product_id")
+        .eq("product_id", productId)
+        .single();
+    } else {
+      // It's a string format (like "fruit-apple")
+      // Try to find by name or any other identifier that might match
+      console.log("Using name-based query for product:", productId);
+      
+      // Extract a potential name from the ID (e.g., "fruit-apple" -> "apple")
+      const possibleName = productId.split('-').pop();
+      
+      productQuery = supabase
+        .from("products")
+        .select("product_id")
+        .ilike("name", `%${possibleName}%`)
+        .single();
+    }
+    
+    const { data: product, error: productError } = await productQuery;
+    
+    if (productError || !product) {
+      console.error("Error finding product:", productError);
+      throw new Error(`Product not found with ID: ${productId}`);
+    }
+    
+    // Use the actual database product_id for cart operations
+    const actualProductId = product.product_id;
+    console.log("Found product in database with ID:", actualProductId);
+
     // Check if item already in cart
     const { data: cartItems, error: itemsError } = await supabase
       .from("cart_items")
@@ -67,7 +107,7 @@ export const addToCart = async (userId: string, productId: string, quantity: num
       
     if (itemsError) throw itemsError;
     
-    const existingItem = cartItems?.find(item => item.product_id === productId);
+    const existingItem = cartItems?.find(item => item.product_id === actualProductId);
 
     if (existingItem) {
       // Update quantity
@@ -85,7 +125,7 @@ export const addToCart = async (userId: string, productId: string, quantity: num
         .from("cart_items")
         .insert({
           cart_id: cart.cart_id,
-          product_id: productId,
+          product_id: actualProductId,
           quantity,
         })
         .select()
@@ -125,4 +165,3 @@ export const removeCartItem = async (cartItemId: string) => {
   if (error) throw error;
   return true;
 };
-
