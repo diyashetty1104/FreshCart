@@ -1,4 +1,3 @@
-
 import ProductCard from "@/components/ProductCard";
 import { fruits } from "@/data/fruits";
 import React, { useState } from "react";
@@ -22,33 +21,30 @@ export default function Shop() {
     navigate("/");
   };
 
-  // Handle product filtering by selected category and pad to at least 10 items
-  let filteredFruits = selectedCategory
+  // Get filtered products based on selected category
+  const filteredFruits = selectedCategory
     ? fruits.filter((fruit) => fruit.category === selectedCategory)
     : fruits;
 
-  // Pad with existing items to reach at least 10, if needed
-  if (filteredFruits.length > 0 && filteredFruits.length < 10) {
-    const pad = [];
-    let idx = 0;
-    // Avoid infinite loop if source is empty (shouldn't happen)
-    while (pad.length + filteredFruits.length < 10 && filteredFruits.length > 0) {
-      pad.push(filteredFruits[idx % filteredFruits.length]);
-      idx++;
+  // Remove duplicate products by name - keep only the first occurrence
+  const uniqueProducts = filteredFruits.reduce((unique, item) => {
+    // If we haven't seen this product name before, add it to our array
+    if (!unique.some(product => product.name === item.name)) {
+      unique.push(item);
     }
-    filteredFruits = filteredFruits.concat(pad);
-  }
+    return unique;
+  }, [] as typeof fruits);
 
   // If there is no product for the selected category, show a no-products message
   const productGrid =
-    filteredFruits.length === 0 ? (
+    uniqueProducts.length === 0 ? (
       <div className="col-span-full text-center text-gray-500 py-10">
         No products available in this category.
       </div>
     ) : (
-      filteredFruits.slice(0, 10).map((fruit, i) => (
+      uniqueProducts.map((fruit) => (
         <ProductCard
-          key={`${fruit.id}-${i}`}
+          key={fruit.id}
           id={fruit.id}
           name={fruit.name}
           price={fruit.price}
@@ -123,4 +119,3 @@ export default function Shop() {
     </div>
   );
 }
-
