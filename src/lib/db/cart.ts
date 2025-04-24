@@ -59,10 +59,10 @@ export const addToCart = async (userId: string, productId: string, quantity: num
       cart = newCart;
     }
 
-    // First, find the product by ID or name (to handle both UUID and string IDs)
+    // First, find the product by ID or name
     let productQuery;
     
-    // Check if productId is a UUID format or a string format
+    // Check if productId is a UUID format
     const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     
     if (uuidPattern.test(productId)) {
@@ -71,32 +71,48 @@ export const addToCart = async (userId: string, productId: string, quantity: num
       productQuery = supabase
         .from("products")
         .select("product_id")
-        .eq("product_id", productId)
-        .single();
+        .eq("product_id", productId);
     } else {
-      // It's a string format (like "fruit-apple")
-      // Try to find by name or any other identifier that might match
+      // It's a string format (like "fruit-apple" or "dairy-milk")
       console.log("Using name-based query for product:", productId);
       
-      // Extract a potential name from the ID (e.g., "fruit-apple" -> "apple")
+      // Extract a potential name from the ID (e.g., "fruit-apple" -> "apple", "dairy-milk" -> "milk")
       const possibleName = productId.split('-').pop();
       
+      // Try match by category-name format first
       productQuery = supabase
         .from("products")
         .select("product_id")
-        .ilike("name", `%${possibleName}%`)
-        .single();
+        .ilike("name", `%${possibleName}%`);
+      
+      // If that doesn't work, we'll try other approaches in the next step
     }
     
-    const { data: product, error: productError } = await productQuery;
+    const { data: products, error: productError } = await productQuery;
     
-    if (productError || !product) {
+    if (productError) {
       console.error("Error finding product:", productError);
-      throw new Error(`Product not found with ID: ${productId}`);
+      throw new Error(`Error looking up product: ${productId}`);
     }
     
-    // Use the actual database product_id for cart operations
-    const actualProductId = product.product_id;
+    if (!products || products.length === 0) {
+      // If no results by name match, try a direct match on the whole ID
+      console.log("No products found by name extraction, trying direct product match");
+      const { data: directProducts, error: directError } = await supabase
+        .from("products")
+        .select("product_id")
+        .or(`name.ilike.%${productId}%,description.ilike.%${productId}%`);
+      
+      if (directError || !directProducts || directProducts.length === 0) {
+        console.error("Product not found with any method:", productId);
+        throw new Error(`Product not found with ID: ${productId}`);
+      }
+      
+      products = directProducts;
+    }
+    
+    // Use the first matching product
+    const actualProductId = products[0].product_id;
     console.log("Found product in database with ID:", actualProductId);
 
     // Check if item already in cart
